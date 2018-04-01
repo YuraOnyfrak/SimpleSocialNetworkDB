@@ -76,7 +76,8 @@ CREATE TABLE EventsTable
 (
  Id INT IDENTITY,
  Name NVARCHAR(256),
- Duration TIME,
+ DateEvent DATE,
+ Duration DATE,
  DescriptionEvents NVARCHAR(256),
  AddressEvents NVARCHAR(256),
  MaxCountPeople INT ,
@@ -87,7 +88,14 @@ CREATE TABLE EventsTable
  CONSTRAINT CK_MaxCountPeople CHECK(MaxCountPeople>0)
  
  )
+
+ drop table EventsTable
+
+ INSERT INTO EventsTable VALUES
+ ('Concert Ramstain',  GETDATE(),  SYSDATETIME() , '', 'Kyiv', 10000, '', 1, 1)
  
+ 
+
  GO
  CREATE TABLE EventsUser
  (
@@ -99,10 +107,13 @@ CREATE TABLE EventsTable
  FOREIGN KEY (EventID)  REFERENCES EventsTable (Id)  ON DELETE CASCADE ON UPDATE CASCADE
  )
  -- -1 the end
- -- 0 todat
+ -- 0 today
  -- 1 in the future
-
-
+ GO
+  
+ INSERT INTO EventsUser VALUES
+ (1,0),
+ (2,0);
 
 INSERT INTO Users VALUES
 ('user0','super0'),
@@ -155,5 +166,7 @@ Go
 SELECT COUNT(StatusCode ) AS CountPendingFriends
 FROM Friends
 WHERE StatusCode = 0
+
+
 
 
