@@ -12,6 +12,7 @@ CREATE TABLE Users
 
 )
 
+
 GO
 CREATE TABLE UsersSecurity
 (
@@ -28,6 +29,7 @@ CREATE TABLE UsersSecurity
 --About VARCHAR(30)
 
 Go
+
 CREATE TABLE MessagesTable
 (
  Id int IDENTITY ,
@@ -35,7 +37,7 @@ CREATE TABLE MessagesTable
  Sender INT  NOT NULL ,
  MessageText NVARCHAR(2000),
  SentDate Date NOT NULL ,
- StatusMessage int NOT NULL DEFAULT '0',
+ StatusMessage int  NULL DEFAULT 0,
 
  CONSTRAINT PK_MessagesID PRIMARY KEY  (Id),
 
@@ -64,109 +66,10 @@ CREATE TABLE Friends
  
 )
 
-
-drop table Friends
 --0 - Pending
 --1-Accepted
 --2 -Rejected
 --3 -Blocked
 
-Go
-CREATE TABLE EventsTable
-(
- Id INT IDENTITY,
- Name NVARCHAR(256),
- DateEvent DATE,
- Duration DATE,
- DescriptionEvents NVARCHAR(256),
- AddressEvents NVARCHAR(256),
- MaxCountPeople INT ,
- ImageEvents NVARCHAR(256),
- StatusEvents INT,
- Visibility BIT NOT NULL DEFAULT 1,
- CONSTRAINT PK_EventsID PRIMARY KEY  (Id),
- CONSTRAINT CK_MaxCountPeople CHECK(MaxCountPeople>0)
+
  
- )
-
- drop table EventsTable
-
- INSERT INTO EventsTable VALUES
- ('Concert Ramstain',  GETDATE(),  SYSDATETIME() , '', 'Kyiv', 10000, '', 1, 1)
- 
- 
-
- GO
- CREATE TABLE EventsUser
- (
- Id INT IDENTITY,
- UserID INT,
- EventID INT,
- CONSTRAINT PK_EventsUserID PRIMARY KEY  (Id),
- FOREIGN KEY (UserId)  REFERENCES Users (Id)  ON DELETE CASCADE ON UPDATE CASCADE,
- FOREIGN KEY (EventID)  REFERENCES EventsTable (Id)  ON DELETE CASCADE ON UPDATE CASCADE
- )
- -- -1 the end
- -- 0 today
- -- 1 in the future
- GO
-  
- INSERT INTO EventsUser VALUES
- (1,0),
- (2,0);
-
-INSERT INTO Users VALUES
-('user0','super0'),
-('user1','super1'),
-('user2','super2'),
-('user3','super3'),
-('user4','super4'),
-('user5','super5'),
-('user6','super6'),
-('user7','super7');
-
-
-INSERT INTO Friends VALUES
-(1, 2, 1, 1),
-(1, 3, 1, 3),
-(1, 4, 1, 4),
-(1, 5, 0, 5),
-(1, 6, 3, 1),
-(2, 3, 1, 2),
-(2, 4, 1, 4),
-(3, 5, 1, 3),
-(4, 3, 0, 1);
-
-GO
---Friend Request
-INSERT INTO Friends VALUES
-(4, 2, 0, 1);
-
-GO
---Accept Friend Request
-UPDATE Friends SET StatusCode = 1, Action_user_id = 2
-WHERE UserOneId = 1 AND UserTwoId = 5
-
-GO
---Checking Friendship
-SELECT * FROM Friends
-WHERE UserOneId  = 1 AND UserTwoId = 2 AND StatusCode = 1
-
-Go
---Friends List
-SELECT  Users.FirstName, Users.LastName FROM Friends
-JOIN Users ON Users.Id=UserTwoId
-WHERE (UserOneId  = 2 OR UserTwoId = 1)
-AND  StatusCode  = 1
-
-
-
-Go
---count pending friends
-SELECT COUNT(StatusCode ) AS CountPendingFriends
-FROM Friends
-WHERE StatusCode = 0
-
-
-
-
